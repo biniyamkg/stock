@@ -172,7 +172,7 @@ class StockInOutReportController(http.Controller):
         domain = [("date", "<=", wizard.date_end)]
         # state filter (ready→assigned)
         state_val = getattr(wizard, "state", "done")
-        print(f"state val:{state_val}")
+        # print(f"state val:{state_val}")
         if state_val and state_val != "all":
             domain.append(("state", "=", "assigned" if state_val == "ready" else state_val))
 
@@ -198,6 +198,8 @@ class StockInOutReportController(http.Controller):
             "return_cust": 0.0,
             "losses": 0.0,
             "gains": 0.0,
+            "transfer_in":0.0,
+            "transfer_out":0.0,
         })
 
         def pick_internal_loc(m):
@@ -228,7 +230,7 @@ class StockInOutReportController(http.Controller):
             d["product"] = prod.display_name
             d["category"] = prod.categ_id.display_name
             d["location"] = loc.display_name
-            qty = mv.product_uom_qty
+            qty = mv.quantity #product_uom_qty
 
             # Initial balance (all moves before start date)
             if mv.date.date() < wizard.date_start:
@@ -254,6 +256,27 @@ class StockInOutReportController(http.Controller):
                 d["losses"] += qty
             elif src_u in ("inventory", "production") and dst_u == "internal":
                 d["gains"] += qty
+            elif src_u == "internal" and dst_u == "internal":
+                # Count transfer out for source location
+                key_src = (prod.id, mv.location_id.id)
+                d_src = agg[key_src]
+                d_src["product"] = prod.display_name
+                d_src["category"] = prod.categ_id.display_name
+                d_src["location"] = mv.location_id.display_name
+                d_src["transfer_out"] += qty
+
+                # Count transfer in for destination location
+                key_dst = (prod.id, mv.location_dest_id.id)
+                d_dst = agg[key_dst]
+                d_dst["product"] = prod.display_name
+                d_dst["category"] = prod.categ_id.display_name
+                d_dst["location"] = mv.location_dest_id.display_name
+                d_dst["transfer_in"] += qty
+
+            elif src_u == "internal" and dst_u == "internal" and loc.id == mv.location_dest_id.id:
+                d["transfer_in"] += qty
+            elif src_u == "internal" and dst_u == "internal" and loc.id == mv.location_id.id:
+                d["transfer_out"] += qty
 
         # finalize rows
         headers = [
@@ -261,16 +284,16 @@ class StockInOutReportController(http.Controller):
             "Initial Balance",
             "Purchased", "Customer Returns", "Adjustments (Gain)",
             "Sold Qty", "Supplier Returns", "Adjustments (Loss)",
+            "Transfer Issued", "Transfer Received",
             "Total Incoming", "Total Outgoing",
             "Ending Balance",
             "Unit Cost", "Valuation"
         ]
-
         lines = []
         running_total = 0.0  # overall running (sheet-level); keep if you want a per-line running figure
         for (pid, lid), d in agg.items():  # iterate with keys + values
-            net_incoming = d["purchased"] + d["gains"] - d["losses"] - d["return_sup"]
-            net_outgoing = d["sold"] + d["losses"] - d["return_cust"]
+            net_incoming = d["purchased"] + d["gains"] - d["losses"] - d["return_sup"] +d["transfer_in"]
+            net_outgoing = d["sold"] + d["losses"] - d["return_cust"]+d["transfer_out"]
             ending = d["initial"] + net_incoming - net_outgoing
             running_total += ending
 
@@ -287,6 +310,7 @@ class StockInOutReportController(http.Controller):
                 d["initial"],
                 d["purchased"], d["return_cust"], d["gains"],
                 d["sold"], d["return_sup"], d["losses"],
+                d["transfer_out"],d["transfer_in"],
                 net_incoming, net_outgoing,
                 ending,
                 unit_cost, valuation,
@@ -337,7 +361,7 @@ class StockInOutReportController(http.Controller):
             d = agg[prod.id]
             d["product"] = prod.display_name
             d["category"] = prod.categ_id.display_name
-            qty = mv.product_uom_qty
+            qty = mv.quantity #product_uom_qty
             src_u = mv.location_id.usage
             dst_u = mv.location_dest_id.usage
 
@@ -379,8 +403,8 @@ class StockInOutReportController(http.Controller):
             # fetch product to get UoM and cost
             product = request.env["product.product"].browse(pid) if pid else False
             uom = product.uom_id.name if product else ""
-            unit_cost = product.standard_price if product else 0.0
-            valuation = forecast * unit_cost
+            # unit_cost = product.standard_price if product else 0.0
+            # valuation = forecast * unit_cost
 
             lines.append([
                 d["product"], d["category"],
@@ -388,7 +412,6 @@ class StockInOutReportController(http.Controller):
                 d["initial"],
                 net_incoming, net_outgoing,
                 forecast,
-                unit_cost, valuation,  # 👈 added for completeness
             ])
         return headers, lines
 
