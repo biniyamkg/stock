@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Audit Report -->
+    <!-- Main Audit Report -->
+    <template id="audit_report_html">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="wizard">
+                <h2 class="text-center mb-3" style="font-size:16px; font-weight:normal;">Audit Report</h2>
+
+                <!-- PURCHASE REPORT -->
+
+<!--                    <h3 class="o_group_header" style="font-size:14px; font-weight:normal;">-->
+<!--                        Purchase Order: <t t-esc="wizard.document_id.name"/>-->
+<!--                    </h3>-->
+<!--                    <p style="font-size:12px;">-->
+<!--                        Currency: <t t-esc="wizard.document_id.currency_id.name"/>-->
+<!--                        | Company Currency: <t t-esc="wizard.document_id.company_id.currency_id.name"/>-->
+<!--                    </p>-->
+
+                    <!-- Product Lines -->
+                    <table class="table table-sm o_account_reports_table" style="font-size: 12px; border: 1px solid #ddd;">
+                        <thead>
+                            <tr style="background-color: #f9f9f9; font-weight: normal;">
+                                <th style="border: 1px solid #eee;">Product</th>
+                                <th class="text-end" style="border: 1px solid #eee;">Qty Ordered</th>
+                                <th class="text-end" style="border: 1px solid #eee;">Qty Received</th>
+                                <th class="text-end" style="border: 1px solid #eee;">Qty Invoiced</th>
+                                <th class="text-end" style="border: 1px solid #eee;">Ordered Value (<t t-esc="wizard.document_id.currency_id.name"/>)</th>
+                                <th class="text-end" style="border: 1px solid #eee;">Invoiced Value (<t t-esc="wizard.document_id.currency_id.name"/>)</th>
+                                <th class="text-end" style="border: 1px solid #eee;">Stock Value</th>
+                                <th class="text-end" style="border: 1px solid #eee;">Unit Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+<!--                            <t t-foreach="data['purchase_lines']" t-as="line">-->
+<!--                                <tr>-->
+<!--                                    <td><t t-esc="line['product']"/></td>-->
+<!--                                    <td class="text-end"><t t-esc="line.get('qty_ordered', 0)"/></td>-->
+<!--                                    <td class="text-end"><t t-esc="line.get('qty_received', 0)"/></td>-->
+<!--                                    <td class="text-end"><t t-esc="line.get('qty_invoiced', 0)"/></td>-->
+<!--                                    <td class="text-end"><t t-esc="line.get('value_ordered', 0)"/></td>-->
+<!--                                    <td class="text-end"><t t-esc="line.get('value_invoiced', 0)"/></td>-->
+<!--                                    <td class="text-end"><t t-esc="line.get('value_stock', 0)"/></td>-->
+<!--                                    <td class="text-end"><t t-esc="line.get('unit_cost', 0)"/></td>-->
+<!--                                </tr>-->
+<!--                            </t>-->
+                        </tbody>
+                    </table>
+
+                    <!-- Journal Entry Summaries -->
+<!--                    <div class="mt-4">-->
+<!--                        <t t-if="data.get('billing_summary')">-->
+<!--                            <h4>Billing Entries Summary</h4>-->
+<!--                            <table class="table table-sm">-->
+<!--                                <thead>-->
+<!--                                    <tr>-->
+<!--                                        <th>Account</th><th>Debit</th><th>Credit</th><th>Remark</th>-->
+<!--                                    </tr>-->
+<!--                                </thead>-->
+<!--                                <tbody>-->
+<!--                                    <t t-foreach="data['billing_summary']" t-as="j">-->
+<!--                                        <tr>-->
+<!--                                            <td><t t-esc="j['account']"/></td>-->
+<!--                                            <td class="text-end"><t t-esc="j['debit']"/></td>-->
+<!--                                            <td class="text-end"><t t-esc="j['credit']"/></td>-->
+<!--                                            <td><t t-esc="j['remark']"/></td>-->
+<!--                                        </tr>-->
+<!--                                    </t>-->
+<!--                                </tbody>-->
+<!--                            </table>-->
+<!--                        </t>-->
+
+<!--                        <t t-if="data.get('inventory_summary')">-->
+<!--                            <h4>Inventory Entries Summary</h4>-->
+<!--                            <table class="table table-sm">-->
+<!--                                <thead>-->
+<!--                                    <tr>-->
+<!--                                        <th>Account</th><th>Debit</th><th>Credit</th><th>Remark</th>-->
+<!--                                    </tr>-->
+<!--                                </thead>-->
+<!--                                <tbody>-->
+<!--                                    <t t-foreach="data['inventory_summary']" t-as="j">-->
+<!--                                        <tr>-->
+<!--                                            <td><t t-esc="j['account']"/></td>-->
+<!--                                            <td class="text-end"><t t-esc="j['debit']"/></td>-->
+<!--                                            <td class="text-end"><t t-esc="j['credit']"/></td>-->
+<!--                                            <td><t t-esc="j['remark']"/></td>-->
+<!--                                        </tr>-->
+<!--                                    </t>-->
+<!--                                </tbody>-->
+<!--                            </table>-->
+<!--                        </t>-->
+
+<!--                        <t t-if="data.get('landed_summary')">-->
+<!--                            <h4>Landed Cost Entries Summary</h4>-->
+<!--                            <table class="table table-sm">-->
+<!--                                <thead>-->
+<!--                                    <tr>-->
+<!--                                        <th>Account</th><th>Debit</th><th>Credit</th><th>Remark</th>-->
+<!--                                    </tr>-->
+<!--                                </thead>-->
+<!--                                <tbody>-->
+<!--                                    <t t-foreach="data['landed_summary']" t-as="j">-->
+<!--                                        <tr>-->
+<!--                                            <td><t t-esc="j['account']"/></td>-->
+<!--                                            <td class="text-end"><t t-esc="j['debit']"/></td>-->
+<!--                                            <td class="text-end"><t t-esc="j['credit']"/></td>-->
+<!--                                            <td><t t-esc="j['remark']"/></td>-->
+<!--                                        </tr>-->
+<!--                                    </t>-->
+<!--                                </tbody>-->
+<!--                            </table>-->
+<!--                        </t>-->
+<!--                    </div>-->
+
+            </t>
+        </t>
+    </template>
+
+
+    <!-- Report Action -->
+    <record id="audit_report_html_action" model="ir.actions.report">
+        <field name="name">Audit Report</field>
+        <field name="model">bk.audit.report_wizard</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">bk_audit_report.audit_report_html</field>
+        <field name="report_file">bk_audit_report.audit_report_html</field>
+        <field name="print_report_name">'Audit Report - %s' % (object.document_id.name if object.document_id else '')</field>
+        <field name="binding_model_id" ref="model_bk_audit_report_wizard"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

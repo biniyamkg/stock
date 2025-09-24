@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bk_report_audit__line_wizard,bk.audit.report_wizard,model_bk_audit_report_wizard,stock.group_stock_user,1,1,1,1

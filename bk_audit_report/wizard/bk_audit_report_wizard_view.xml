@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_audit_report_wizard_form" model="ir.ui.view">
+        <field name="name">bk.audit.report_wizard.form</field>
+        <field name="model">bk.audit.report_wizard</field>
+        <field name="arch" type="xml">
+            <form string="Audit Report Wizard">
+                <group>
+<!--                    <field name="document_type"/>-->
+                    <field name="document_id" options="{'no_create': False}"/>
+<!--                    <field name="sale_order_id"/>-->
+<!--                    <field name="picking_id"/>-->
+<!--                    <field name="date_start"/>-->
+<!--                    <field name="date_end"/>-->
+                </group>
+                <footer>
+                    <!-- Button for inline HTML report -->
+<!--                    <button string="Generate HTML Report"-->
+<!--                            type="object"-->
+<!--                            name="action_generate_html"-->
+<!--                            class="btn-primary"/>-->
+
+                    <!-- Button for Excel export -->
+                    <button string="Export to Excel"
+                            type="object"
+                            name="action_generate_excel"/>
+
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Menu + Action -->
+    <menuitem id="menu_audit_root" name="Audit" parent="account.menu_finance"/>
+
+    <record id="action_audit_report" model="ir.actions.act_window">
+        <field name="name">Purchase Reconcile</field>
+        <field name="res_model">bk.audit.report_wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_audit_report"
+              name="Purchase Reconcile"
+              parent="stock.menu_warehouse_report"
+              action="action_audit_report"
+              sequence="30"/>
+</odoo>
